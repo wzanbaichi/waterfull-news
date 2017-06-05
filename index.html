@@ -11,15 +11,16 @@
             margin: 0;
             padding: 0;
         }
-
         .content {
-            max-width: 1700px;
+            width: 1920px;
             margin: 0 auto;
         }
-
         .content ul {
+            max-width: 1700px;
+            margin: 0 auto;
             position: relative;
             margin-top: 20px;
+
         }
 
         .content li {
@@ -31,6 +32,7 @@
             box-shadow: 0 0 25px rgba(27, 27, 27, 0.5);
             overflow: hidden;
             padding: 10px;
+            transition: all .5s;
         }
 
         .content li img {
@@ -89,10 +91,13 @@
     clock = setTimeout(function(){
       lazyload();
     },100)
+  })
 
+  $(window).on('resize',function(){
+    waterfull()
   })
   function jsonP(num) {
-    var script = '<script id=\'script\'src=\'http://platform.sina.com.cn/slide/album_tech?jsoncallback=func&app_key=1271687855&num='+num+'+&page=' + page + '\'>' + '<' + '/script>';
+    var script = '<script id=\'script\'src=\'https://platform.sina.com.cn/slide/album_tech?jsoncallback=func&app_key=1271687855&num='+num+'+&page=' + page + '\'>' + '<' + '/script>';
     $('body').append(script);
     $('body #script').remove();
     page++;
