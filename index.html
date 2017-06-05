@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>waterfull view --news</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .content {
+            max-width: 1700px;
+            margin: 0 auto;
+        }
+
+        .content ul {
+            position: relative;
+            margin-top: 20px;
+        }
+
+        .content li {
+            position: absolute;
+            width: 300px;
+            text-align: center;
+            margin: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 25px rgba(27, 27, 27, 0.5);
+            overflow: hidden;
+            padding: 10px;
+        }
+
+        .content li img {
+            width: 300px;
+        }
+
+        h2 {
+            border-top: 1px solid grey;
+            font-size: 16px;
+            margin: 5px 0 10px 0;
+            padding-top: 10px;
+        }
+
+        p {
+            font-size: 14px;
+            text-align: left;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        a:link {
+            color: black;
+        }
+
+        a:visited {
+            color: black;
+        }
+    </style>
+</head>
+<body>
+<div class="content">
+    <ul>
+        <!--<li>-->
+        <!--<a href="">-->
+        <!--<img src="http:\/\/n.sinaimg.cn\/tech\/transform\/20170602\/No9K-fyfuzmy0909022.jpg" alt="">-->
+        <!--<h2>狮语者”与狮共舞亲密互动</h2>-->
+        <!--</a>-->
+        <!--<p>Kevin是一位动物行为学家，他能够与人类认为最危险的动物十分融洽地生活在一起。</p>-->
+        <!--</li>-->
+    </ul>
+</div>
+
+<script src='jquery-3.2.1.js'></script>
+<script>
+  var page = 1;
+  var clock;
+  jsonP(15);
+  page += 2;
+
+  $(window).on('scroll', function () {
+    if(clock){
+      window.clearTimeout(clock);
+    }
+    clock = setTimeout(function(){
+      lazyload();
+    },100)
+
+  })
+  function jsonP(num) {
+    var script = '<script id=\'script\'src=\'http://platform.sina.com.cn/slide/album_tech?jsoncallback=func&app_key=1271687855&num='+num+'+&page=' + page + '\'>' + '<' + '/script>';
+    $('body').append(script);
+    $('body #script').remove();
+    page++;
+  }
+
+  function func(data) {
+    for (var i = 0; i < data.data.length; i++) {
+      var html = '';
+      html += '<li><a href=\'' + data.data[i].url + '\'>';
+      html += '<img src=\'' + data.data[i].img_url + '\'>';
+      html += '<h2>' + data.data[i].short_name + '</h2>';
+      html += '</a>';
+      html += '<p>' + data.data[i].short_intro + '</p>' + '</li>';
+      $('.content ul').append(html);
+    }
+    waterfull();
+  }
+
+  function waterfull() {
+    var boxNum = parseInt($(window).width() / $('.content ul li').outerWidth(true));
+    var heightArr = [];
+    for (var i = 0; i < boxNum; i++) {
+      heightArr[i] = 0;
+    }
+    $('.content ul li').each(function () {
+      var minHeight = Math.min.apply(null, heightArr);
+      var minIndex = heightArr.indexOf(minHeight);
+      $(this).css({
+        top: heightArr[minIndex],
+        left: $(this).outerWidth(true) * minIndex
+      })
+      heightArr[minIndex] += $(this).outerHeight(true);
+    })
+  }
+
+  function lazyload() {
+    if ($(window).height()+$(window).scrollTop()>$('.content ul li').last().offset().top+$('.content ul li').last().outerHeight(false)) {
+      jsonP(5);
+    }
+  }
+
+</script>
+</body>
+</html>
